@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <div class="mais"
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Simulação</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="main-container">
+        <aside class="sidebar">
+            <h1>Parâmetross</h1>
+
+            <div class="menus-container">
+                <div class="menu">
+                    <h3> Modelo de exibição</h3>
+                    <div class="menu-content">
+                        
+                    </div>
+                </div>
+            </div>
+                <div class="menu">
+                    <h3>Poluentes</h3>
+                    <div class="menu-content">
+                        <div class="menu-item">
+                            <input type="radio" id="modeloA" name="modelo_grafico" value="A" checked>
+                            <label for="modeloA">Modelo Linear</label>
+                        </div>
+                        <div class="menu-item">
+                            <input type="radio" id="modeloB" name="modelo_grafico" value="B">
+                            <label for="modeloB">Modelo Exponencial</label>
+                        </div>
+                        <div class="menu-item">
+                            <input type="radio" id="modeloC" name="modelo_grafico" value="C">
+                            <label for="modeloC">Modelo Logarítmico</label>
+                        </div>
+                        <div class="menu-item">
+                            <input type="radio" id="modeloD" name="modelo_grafico" value="D">
+                            <label for="modeloD">Série Temporal</label>
+                        </div>
+                        <div class="menu-item">
+                            <input type="radio" id="modeloE" name="modelo_grafico" value="E">
+                            <label for="modeloE">Análise de Frequência</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu">
+                    <h3>Ajuste Fino</h3>
+                    <div class="menu-content">
+                        <div class="menu-item">
+                            <label for="valor_x">Coeficiente Angular (X):</label>
+                            <input type="number" id="valor_x" name="valor_x" value="1.5" step="0.1">
+                        </div>
+                        <div class="menu-item">
+                            <label for="valor_y">Intercepto (Y):</label>
+                            <input type="number" id="valor_y" name="valor_y" value="10">
+                        </div>
+                        <div class="menu-item">
+                            <label for="ruido">Nível de Ruído (%):</label>
+                            <input type="range" id="ruido" name="ruido" min="0" max="100" value="20">
+                        </div>
+                         <div class="menu-item">
+                            <label for="pontos">Nº de Pontos:</label>
+                            <input type="number" id="pontos" name="pontos" value="100">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu">
+                    <h3>Opções de Exibição</h3>
+                    <div class="menu-content">
+                        <div class="menu-item">
+                            <input type="checkbox" id="exibir_legenda" name="exibir_legenda" checked>
+                            <label for="exibir_legenda">Exibir Legenda</label>
+                        </div>
+                        <div class="menu-item">
+                            <input type="checkbox" id="linhas_grade" name="linhas_grade" checked>
+                            <label for="linhas_grade">Mostrar Linhas de Grade</label>
+                        </div>
+                        <div class="menu-item">
+                            <input type="checkbox" id="suavizar_curva" name="suavizar_curva">
+                            <label for="suavizar_curva">Suavizar Curva</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button id="simulation-button" class="simulation-button">Gerar Simulação</button>
+        </aside>
+
+        <main class="main-content">
+            <h2>Visualização do Gráfico</h2>
+            <div id="grafico-container" class="chart-container">
+                <p class="chart-placeholder-text">O gráfico será exibido aqui após a simulação.</p>
+            </div>
+        </main>
+    </div>
+
+</body>
+</html>
