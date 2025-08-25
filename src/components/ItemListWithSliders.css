@@ -1,0 +1,17 @@
+.item-list-container {
+  margin-top: 40px;
+  padding: 20px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 8px;
+  background-color: var(--background-primary, #fff);
+  width: 100%;
+  max-width: 500px;
+}
+
+.list-title {
+  margin-top: 0;
+  margin-bottom: 25px;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--accent-color, #007bff);
+  padding-bottom: 10px;
+}

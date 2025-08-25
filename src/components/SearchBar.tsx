@@ -3,6 +3,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './SearchBar.css';
 
+
+interface SearchBarProps {
+  items: SearchItem[];
+  placeholder?: string;
+  onSelectionChange: (selectedItems: SearchItem[]) => void; // NOVA PROP
+}
+
+
 // --- Ícones como componentes SVG ---
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -31,9 +39,17 @@ interface SearchBarProps {
 
 
 // --- O Componente Principal ---
-const SearchBar: React.FC<SearchBarProps> = ({ items, placeholder = "Pesquisar..." }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchBar: React.FC<SearchBarProps> = ({ items, placeholder = "Pesquisar...", onSelectionChange }) => {
+  // ... todos os seus hooks e lógica existentes
+
   const [selectedItems, setSelectedItems] = useState<SearchItem[]>([]);
+
+  // NOVO useEffect para notificar o componente pai
+  useEffect(() => {
+    onSelectionChange(selectedItems);
+  }, [selectedItems, onSelectionChange]);
+
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState<SearchItem[]>([]);
   
   const [isResultsOpen, setIsResultsOpen] = useState(false);
