@@ -3,11 +3,14 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "homepage": "http://pedr0r0ch.github.io/trophic_magification_simulator",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -29,14 +32,5 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"
-  }
-
-  {
-    "homepage": "http://pedr0r0ch.github.io/trophic_magification_simulator",
-    "name": "trophic_magification_simulator",
-    "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
-    }
   }
 }
