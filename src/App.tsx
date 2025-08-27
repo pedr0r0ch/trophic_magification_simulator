@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 //import { ThemeProvider } from './contexts/ThemeContext';
 import type { SearchItem } from './components/SearchBar';
