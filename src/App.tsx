@@ -49,27 +49,29 @@ function App() {
 
   return (
     //<ThemeProvider>
-    <div style={{ padding: '50px', display: 'flex', justifyContent: 'center', minHeight: '100vh' }}>
-      <div style={{ width: '100%', maxWidth: '500px' }}>
-        <h1>Controle de Itens</h1>
-        
-        <SearchBar 
-          items={mockItems} 
-          placeholder="Pesquisar frutas..."
-          // Passamos a função de callback para o SearchBar
-          onSelectionChange={handleSelectionChange}
-        />
+    <div className='sidebar'>
+      <div style={{ padding: '50px', display: 'flex', justifyContent: 'center', minHeight: '100vh' }}>
+        <div style={{ width: '100%', maxWidth: '500px' }}>
+          <h1>Controle de Itens</h1>
+          
+          <SearchBar 
+            items={mockItems} 
+            placeholder="Pesquisar Poluentes"
+            // Passamos a função de callback para o SearchBar
+            onSelectionChange={handleSelectionChange}
+          />
 
-        <ItemListWithSliders 
-          items={selectedItems} 
-          values={sliderValues}
-          onValueChange={handleSliderValueChange}
-        />
+          <ItemListWithSliders 
+            items={selectedItems} 
+            values={sliderValues}
+            onValueChange={handleSliderValueChange}
+          />
 
-        {/* Opcional: Exibir o estado atual para debug */}
-        <pre style={{ marginTop: '20px', backgroundColor: '#eee', padding: '10px', borderRadius: '5px' }}>
-          {JSON.stringify({ selectedItems, sliderValues }, null, 2)}
-        </pre>
+          {/* Opcional: Exibir o estado atual para debug */}
+          <pre style={{ marginTop: '20px', backgroundColor: '#eee', padding: '10px', borderRadius: '5px' }}>
+            {JSON.stringify({ selectedItems, sliderValues }, null, 2)}
+          </pre>
+        </div>
       </div>
     </div>
     //</ThemeProvider>
