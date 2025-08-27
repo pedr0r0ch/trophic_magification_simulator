@@ -30,4 +30,13 @@
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"
   }
+
+  {
+    "homepage": "http://pedr0r0ch.github.io/trophic_magification_simulator",
+    "name": "trophic_magification_simulator",
+    "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+    }
+  }
 }
