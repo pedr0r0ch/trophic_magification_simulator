@@ -1,0 +1,5 @@
+.text-scroll-wrapper {
+  height: 100vh;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory; /* rolagem por tela */
+}
