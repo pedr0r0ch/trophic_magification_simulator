@@ -1,17 +1,19 @@
 .item-list-container {
   margin-top: 40px;
   padding: 20px;
-  border: 1px solid var(--border-color, #ddd);
+  border: 1px solid var(--border-color, #6c6c6c);
   border-radius: 8px;
-  background-color: var(--background-primary, #fff);
+  background-color: var(--background-primary, #d7d7d7);
   width: 100%;
-  max-width: 500px;
+  max-width: 90%;
+  align-self: centers;
 }
 
 .list-title {
+  align-content: center;
   margin-top: 0;
   margin-bottom: 25px;
   color: var(--text-primary);
-  border-bottom: 2px solid var(--accent-color, #007bff);
-  padding-bottom: 10px;
+  border-bottom: 2px solid var(--accent-color, #000000);
+  padding-bottom:10px;
 }

@@ -38,7 +38,7 @@ const CustomSlider: React.FC<CustomSliderProps> = ({
           onChange={handleSliderChange}
           className="slider-input"
         />
-        <span className="slider-value">{value}</span>
+        <span className="slider-value">{value + ' µg/g'}</span>
       </div>
     </div>
   );

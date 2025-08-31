@@ -1,0 +1,34 @@
+/* Container geral vira grid 2x2 ocupando a altura da tela */
+.plot-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+  grid-template-rows: repeat(2, 1fr);    /* 2 linhas */
+  gap: 40px;
+  padding: 20px;
+
+  /* cada "página" ocupa 100% da viewport */
+  height: 100vh;         
+  scroll-snap-align: start; /* trava rolagem em cada página */
+}
+
+/* Cada gráfico */
+.plot-item {
+  min-width: 0; /* evita estourar o grid */
+  background: #fff;
+  border: 1px solid #000000;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.511);
+  padding: 20px;
+}
+
+.plot-placeholder {
+  min-width: 100px;
+  background: #fff;
+  border: 1px dashed #000000;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;            
+  justify-content: center;   
+  align-items: center;       
+  text-align: center;
+}
