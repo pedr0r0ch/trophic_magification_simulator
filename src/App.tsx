@@ -9,15 +9,24 @@ import ufrjLogo from './ufrj-vertical-cor-rgb-completa-telas.svg'
 
 // Dados de exemplo (sem alterações)
 const poluentes: SearchItem[] = [
-  { id: 'dioxinas', name: 'Dioxinas' },
-  { id: 'furanos', name: 'Furanos' },
-  // ... resto dos poluentes
+  { id: 'dioxina', name: 'Dioxina' },
+  { id: 'octocrileno', name: 'Octocrileno' },
+  { id: 'benzofenonas', name: 'Benzofenonas' },
+  { id: 'metilparabeno', name: 'Metilparabeno' },
+  { id: 'propilparabeno', name: 'Propilparabeno' },
+  { id: 'mercurio', name: 'Mercurio' },
+  { id: 'chumbo', name: 'Chumbo' },
+  { id: 'polifluoroalquil', name: 'Polifluoroalquil' },
 ];
 
 const organismos: SearchItem[] = [
-  { id: 'fitoplancton', name: 'Baleia' },
-  { id: 'zooplancton', name: 'Zooplâncton' },
-  // ... resto dos organismos
+  { id: 'golfinho', name: 'Golfinho' },
+  { id: 'plancton', name: 'Plncton' },
+  { id: 'tubarão', name: 'Tubarão' },
+  { id: 'baleia', name: 'Baleia' },
+  { id: 'tartaruga', name: 'Tartaruga' },
+  { id: 'peixes', name: 'Peixes de pequeno porte' },
+
 ];
 
 type SliderValuesState = {
