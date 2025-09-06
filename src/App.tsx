@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { SearchItem } from './components/SearchBar';
 import SearchBar from './components/SearchBar';
 import ItemListWithSliders from './components/ItemListWithSliders';
@@ -9,33 +9,103 @@ import ufrjLogo from './ufrj-vertical-cor-rgb-completa-telas.svg'
 
 // Dados de exemplo (sem alterações)
 const poluentes: SearchItem[] = [
-  { id: 'dioxinas', name: 'Dioxinas' },
-  { id: 'furanos', name: 'Furanos' },
-  // ... resto dos poluentes
+  { id: 'dioxina', name: 'Dioxina' },
+  { id: 'octocrileno', name: 'Octocrileno' },
+  { id: 'benzofenonas', name: 'Benzofenonas' },
+  { id: 'metilparabeno', name: 'Metilparabeno' },
+  { id: 'propilparabeno', name: 'Propilparabeno' },
+  { id: 'mercurio', name: 'Mercurio' },
+  { id: 'chumbo', name: 'Chumbo' },
+  { id: 'polifluoroalquil', name: 'Polifluoroalquil' },
 ];
 
 const organismos: SearchItem[] = [
-  { id: 'fitoplancton', name: 'Baleia' },
-  { id: 'zooplancton', name: 'Zooplâncton' },
-  // ... resto dos organismos
+  { id: 'golfinho', name: 'Golfinho' },
+  { id: 'plancton', name: 'Plancton' },
+  { id: 'tubarão', name: 'Tubarão' },
+  { id: 'baleia', name: 'Baleia' },
+  { id: 'tartaruga', name: 'Tartaruga' },
+  { id: 'peixes', name: 'Peixes de pequeno porte' },
+
 ];
 
 type SliderValuesState = {
   [key: string | number]: number;
 }
 
+interface OrganismData {
+  organismName: string;
+  concentrations: number[];
+}
+interface PollutantData {
+  pollutantName: string;
+  organisms: OrganismData[];
+}
+type PlotData = PollutantData[];
+
 function App() {
   // --- ESTADO PARA POLUENTES ---
-  // Renomeado para maior clareza
   const [selectedPollutants, setSelectedPollutants] = useState<SearchItem[]>([]);
   const [sliderValues, setSliderValues] = useState<SliderValuesState>({});
-
-  // --- NOVO: ESTADO APENAS PARA ORGANISMOS ---
   const [selectedOrganisms, setSelectedOrganisms] = useState<SearchItem[]>([]);
+  const [plotData, setPlotData] = useState<PlotData>([]); 
+  const [exampleText, setExampleText] = useState<string>("");
 
-  // --- HANDLERS PARA POLUENTES ---
+  //useEffect das mensagens
+  useEffect(() => {
+    const messageForDioxina: string = "(Texto-exemplo gerado por IA) - As maiores preocupações com os impactos da dioxina na vida marinha centram-se em sua alta toxicidade e sua capacidade de funcionar como um potente desregulador endócrino. Essa substância, parte do grupo dos Poluentes Orgânicos Persistentes (POPs), interfere diretamente nos sistemas hormonais ao se ligar a receptores celulares, desregulando processos vitais como a reprodução, o desenvolvimento embrionário e a função imunológica. Em diversas espécies marinhas, desde peixes a mamíferos como focas e golfinhos, a exposição à dioxina está comprovadamente ligada a falhas reprodutivas, deformidades em filhotes, supressão do sistema imunológico e um aumento no risco de desenvolvimento de tumores.";
+    const messageForOctocrileno: string = "(Texto-exemplo gerado por IA) - As principais preocupações em relação aos efeitos do octocrileno em animais marinhos derivam de seu potencial para atuar como um desregulador endócrino. Produtos químicos desreguladores endócrinos podem interferir nos sistemas hormonais dos animais, que regulam uma ampla gama de funções corporais, incluindo reprodução, desenvolvimento e metabolismo. Em várias espécies marinhas, o octocrileno tem sido associado à toxicidade reprodutiva e a anormalidades no desenvolvimento.";
+    const messagesToShow: string[] = [];  
+    
+    const octocrilenoValue = sliderValues['octocrileno'];
+    const dioxinaValue = sliderValues['dioxina'];
+    
+    if (dioxinaValue > 65) {
+      messagesToShow.push(messageForDioxina);
+    }
+    
+    if (octocrilenoValue > 65) {
+      messagesToShow.push(messageForOctocrileno);
+    }
 
-  // Handler que será chamado APENAS pelo SearchBar de Poluentes
+    //mensagem final
+    if (messagesToShow.length > 0) {
+      setExampleText(messagesToShow.join('\n\n'));
+    } else {
+      setExampleText("A título de exemplo, esta mensagem mudará quando as concentrações de dioxina e/ou octocrileno atingirem o limiar superior de 65 µm.");
+    }
+    
+  }, [selectedPollutants, selectedOrganisms, sliderValues]);
+
+  //UseEffect para gerar dados para o app plot
+  useEffect(() => {
+    const newPlotData = selectedPollutants.map((pollutant, pollutantIndex) => {
+    const sliderValue = sliderValues[pollutant.id] || 100;
+    const organismDataForPlot: OrganismData[] = selectedOrganisms.map((organism, organismIndex) => {
+        
+        const timePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const baseConcentrations = timePoints.map(t => 
+          Math.log(t + 1) * (organismIndex + 1) * (pollutantIndex + 1) * 5
+        );
+
+        const finalConcentrations = baseConcentrations.map(c => c * (sliderValue / 100));
+        return {
+          organismName: organism.name as string,
+          concentrations: finalConcentrations,
+        };
+      });
+
+      return {
+        pollutantName: pollutant.name as string,
+        organisms: organismDataForPlot,
+      };
+    });
+    setPlotData(newPlotData);
+    
+  }, [selectedPollutants, selectedOrganisms, sliderValues]); // Gatilhos do efeito
+
+
+  // Handler que será chamado pelo SearchBar de Poluentes
   const handlePollutantSelectionChange = (newSelectedItems: SearchItem[]) => {
     setSelectedPollutants(newSelectedItems);
 
@@ -54,8 +124,7 @@ function App() {
     }));
   };
 
-  // --- NOVO: HANDLER APENAS PARA ORGANISMOS ---
-  // Uma versão mais simples que só atualiza a lista de organismos selecionados.
+  // ---HANDLER PARA ORGANISMOS ---
   const handleOrganismSelectionChange = (newSelectedItems: SearchItem[]) => {
     setSelectedOrganisms(newSelectedItems);
   };
@@ -96,11 +165,28 @@ function App() {
       gap: '20px', // Espaçamento entre o container de gráficos e de texto
     },
     // Container dos Gráficos (Dentro da Coluna 2)
-    plotsContainer: {
-      flex: 1, // Faz este container crescer para ocupar o espaço disponível
-      overflowY: 'auto', // Adiciona sua própria barra de rolagem
-      minHeight: 0, // Truque de CSS para o flexbox calcular a altura corretamente
-      paddingRight: '10px', // Espaço para a barra de rolagem
+    plotsWrapper: { 
+      flex: 1,
+      minHeight: 0, 
+      position: 'relative'
+    },
+    scrollingPlotsArea: { 
+      position: 'absolute', 
+      top: 0, 
+      left: 0, 
+      right: 0, 
+      bottom: 0, 
+      overflowY: 'auto', 
+      padding: '0 1rem 1rem 1rem' 
+    },
+    gradientOverlay: { 
+      position: 'absolute', 
+      bottom: 0, 
+      left: 0, 
+      right: 0, 
+      height: '40px', 
+      background: `linear-gradient(to top, #f0f2f5, transparent)`, 
+      pointerEvents: 'none' 
     },
     // Container do Texto (Dentro da Coluna 2)
     textContainer: {
@@ -168,28 +254,19 @@ function App() {
       {/* --- COLUNA 2: CONTEÚDO --- */}
       <div style={styles.contentColumn}>
         {/* Container Superior: Gráficos */}
-        <main style={styles.plotsContainer}>
-          <Plot 
-          selectedPollutants={selectedPollutants}
-          sliderValues={sliderValues}
-        />
-        </main>
+        <div style={styles.plotsWrapper}>
+          <div style={styles.scrollingPlotsArea}>
+            <Plot plotData={plotData} />
+          </div>
+          <div style={styles.gradientOverlay} />
+        </div>
 
         {/* Container Inferior: Texto Explicativo */}
         <aside style={styles.textContainer}>
 
-          <h3>Informações Adicionais (texto-exemplo) - (poderá ser oculto)</h3>
-          <p>
-            A magnificação trófica da dioxina é o aumento progressivo da sua concentração ao longo da cadeia alimentar, devido à sua bioacumulação nos organismos. Sendo uma substância lipossolúvel (solúvel em gordura), as dioxinas acumulam-se no tecido adiposo dos animais e, como a sua eliminação do corpo é lenta, passam de um nível trófico para outro, concentrando-se cada vez mais em predadores no topo da cadeia, incluindo os humanos através da ingestão de alimentos contaminados, principalmente carne e laticínios. 
-Como a magnificação trófica da dioxina ocorre:
-1. Dispersão ambiental: As dioxinas são libertadas no ambiente através de processos industriais e queimadas, e espalham-se pela atmosfera e solo. 
-2. Contaminação de organismos: Organismos aquáticos e terrestres, como plantas e animais, absorvem as dioxinas presentes no meio ambiente. 
-3. Bioacumulação: Devido à sua natureza lipofílica (afinidade por gorduras), as dioxinas não são facilmente excretadas e acumulam-se nos tecidos gordos dos animais. 
-4. Transferência na cadeia alimentar: Quando um organismo é consumido por outro, as dioxinas presentes nos seus tecidos são transferidas e acumulam-se ainda mais. 
-5. Concentração no topo da cadeia: Ao longo da cadeia alimentar, a concentração de dioxinas aumenta a cada nível trófico, atingindo os níveis mais elevados em predadores de topo, como os humanos, que consomem alimentos de origem animal contaminados. 
-Impacto na saúde humana:
-A exposição humana às dioxinas ocorre maioritariamente através da ingestão de alimentos contaminados, sendo que mais de 90% da exposição se dá por esta via. 
-As dioxinas são substâncias químicas persistentes e bioacumulativas, que podem causar graves problemas de saúde, incluindo perturbações nos sistemas nervoso, imunológico, reprodutivo e endócrino, e são classificadas como carcinógenos humanos. 
+          <h3>Informações Adicionais (Textos-exemplos) - (Ainda em Idealização)</h3>
+           <p style={{ whiteSpace: 'pre-line' }}>
+              {exampleText}
           </p>
         </aside>
       </div>
