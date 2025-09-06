@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -11,112 +11,102 @@ import {
   Legend,
   LogarithmicScale,
 } from 'chart.js';
-import type { SearchItem } from './SearchBar'; // Assumindo que o tipo está em SearchBar
 import './Plot.css';
 
-// Registra os componentes necessários do Chart.js
+// Registrar os módulos do Chart.js
 ChartJS.register(
   CategoryScale, LinearScale, LogarithmicScale, PointElement,
   LineElement, Title, Tooltip, Legend
 );
 
-// --- TIPOS PARA AS PROPS DO COMPONENTE ---
-interface PlotProps {
-  selectedOrganisms: SearchItem[];
-  selectedPollutants: SearchItem[];
-  sliderValues: { [key: string | number]: number };
+// --- TIPOS PARA OS DADOS QUE O COMPONENTE RECEBE ---
+
+// A estrutura de um único organismo (uma linha no gráfico)
+interface OrganismData {
+  organismName: string;
+  concentrations: number[];
 }
 
-// --- DADOS BASE DA SIMULAÇÃO (COM ESCALA DE TEMPO LOGARÍTMICA) ---
-const baseSimulationData: { [key: string]: any[] } = {
-  'mercurio': [
-    { label: 'Fitoplâncton', data: [0.5, 0.8, 1.5, 2.5, 3.5], color: 'rgb(75, 192, 192)' },
-    { label: 'Sardinha', data: [5, 8, 15, 25, 35], color: 'rgb(54, 162, 235)' },
-    { label: 'Tubarão', data: [50, 80, 150, 250, 350], color: 'rgb(255, 99, 132)' },
-  ],
-  'pcb': [
-    { label: 'Fitoplâncton', data: [0.2, 0.4, 0.9, 1.8, 2.5], color: 'rgb(75, 192, 192)' },
-    { label: 'Sardinha', data: [2, 4, 9, 18, 25], color: 'rgb(54, 162, 235)' },
-    { label: 'Tubarão', data: [40, 70, 130, 200, 250], color: 'rgb(255, 99, 132)' },
-  ],
-  'ddt': [
-    { label: 'Algas', data: [0.8, 1.2, 2.0, 3.0, 4.0], color: 'rgb(153, 102, 255)' },
-    { label: 'Ostra', data: [4, 6, 10, 15, 20], color: 'rgb(255, 159, 64)' },
-    { label: 'Golfinho', data: [50, 80, 140, 210, 250], color: 'rgb(255, 205, 86)' },
-  ],
-  'chumbo': [
-    { label: 'Zooplâncton', data: [2, 4, 5.5, 6.5, 7.2], color: 'rgb(75, 192, 192)' },
-    { label: 'Anchova', data: [20, 40, 55, 65, 72], color: 'rgb(54, 162, 235)' },
-    { label: 'Leão-marinho', data: [250, 450, 580, 660, 710], color: 'rgb(255, 99, 132)' },
-  ],
-};
+// A estrutura de um único poluente (um gráfico inteiro)
+interface PollutantData {
+  pollutantName: string;
+  organisms: OrganismData[];
+}
 
-const Plot: React.FC<PlotProps> = ({ selectedPollutants, sliderValues, selectedOrganisms}) => {
-  const [chartData, setChartData] = useState<any[]>([]);
+// O tipo final da prop que o App irá passar: uma lista de dados de poluentes
+type PlotData = PollutantData[];
 
-  useEffect(() => {
-    const newChartData = selectedPollutants.map(pollutant => {
-      const baseDataSets = baseSimulationData[pollutant.id] || [];
-      const sliderValue = sliderValues[pollutant.id] || 100;
+// Define que o componente Plot espera receber uma prop chamada 'plotData'
+interface PlotProps {
+  plotData: PlotData;
+}
 
-      const updatedDataSets = baseDataSets.map(dataSet => {
-        const multipliedData = dataSet.data.map(point => point * (sliderValue / 100));
-        return {
-          ...dataSet,
-          data: multipliedData,
-          borderColor: dataSet.color,
-          backgroundColor: dataSet.color.replace(')', ', 0.5)').replace('rgb', 'rgba'),
-          tension: 0.4,
-        };
-      });
 
-      return {
-        poluenteNome: pollutant.name,
-        chartData: {
-          labels: ['1 Ano', '2 Anos', '5 Anos', '10 Anos', '20 Anos'],
-          datasets: updatedDataSets,
-        },
-      };
-    });
-
-    setChartData(newChartData);
-  }, [selectedPollutants, sliderValues, selectedOrganisms]);
-
+const Plot: React.FC<PlotProps> = ({ plotData }) => {
+  // --- FUNÇÃO AUXILIAR PARA ESTILIZAR OS GRÁFICOS ---
   const getChartOptions = (poluenteNome: string) => ({
     responsive: true,
+    aspectRatio: 1.1,
     plugins: {
       legend: { position: 'top' as const },
       title: { display: true, text: `Concentração de ${poluenteNome}`, font: { size: 18 } },
     },
     scales: {
-      y: { type: 'logarithmic' as const, title: { display: true, text: 'Concentração (µg/g)' } },
+      y: { type: 'logarithmic' as const, //se nao da erro
+           title: { display: true, text: 'Concentração (µg/g)' },
+           min: 0, 
+           max: 100 },
       x: { title: { display: true, text: 'Tempo (Anos)' } },
     },
+    
   });
-  
-  if (selectedPollutants.length === 0) {
-    return <div className="plot-placeholder"> Selecione ao menos um poluente para visualizar o gráfico.</div>;
+
+  // --- LÓGICA DE RENDERIZAÇÃO ---
+
+  // Se não houver dados para exibir, mostra uma mensagem
+  if (!plotData || plotData.length === 0) {
+    return (
+      <div className="plot-placeholder">
+        Selecione poluentes e organismos para gerar os gráficos.
+      </div>
+    );
   }
 
+  // Se houver dados, renderiza os gráficos
   return (
-  <div>
-    {Array.from({ length: Math.ceil(chartData.length / 4) }, (_, pageIndex) => {
-      const start = pageIndex * 4;
-      const end = start + 4;
-      const pageCharts = chartData.slice(start, end);
+    <div className="plot-container">
+      {plotData.map((pollutantData, index) => {
+        
+        // Mapeia os dados recebidos para o formato que o Chart.js espera ('datasets')
+        const chartDatasets = pollutantData.organisms.map((org, orgIndex) => {
+          const colors = ['#008d8dff', '#014877ff', '#b41538ff', '#c38e08ff', '#5632a0ff'];
+          const color = colors[orgIndex % colors.length];
+          return {
+            label: org.organismName,
+            data: org.concentrations,
+            borderColor: color,
+            backgroundColor: color + '80', // Adiciona transparência
+            tension: 0.8,
+          };
+        });
 
-      return (
-        <div key={pageIndex} className="plot-container">
-          {pageCharts.map((data, i) => (
-            <div key={i} className="plot-item">
-              <Line options={getChartOptions(data.poluenteNome)} data={data.chartData} />
-            </div>
-          ))}
-        </div>
-      );
-    })}
-  </div>
-);
+        // Prepara o objeto de dados final para o componente <Line>
+        const finalChartData = {
+          labels: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], // 10 pontos de dados
+          datasets: chartDatasets,
+        };
+
+        return (
+          <div key={index} className="plot-item">
+            <Line 
+              options={(getChartOptions(pollutantData.pollutantName))} 
+              data={finalChartData} 
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
 };
 
 export default Plot;
