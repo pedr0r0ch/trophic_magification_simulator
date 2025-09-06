@@ -40,37 +40,31 @@ interface SearchBarProps {
 
 // --- O Componente Principal ---
 const SearchBar: React.FC<SearchBarProps> = ({ items, placeholder = "Pesquisar...", onSelectionChange }) => {
-  // ... todos os seus hooks e lógica existentes
 
   const [selectedItems, setSelectedItems] = useState<SearchItem[]>([]);
-
-  // NOVO useEffect para notificar o componente pai
-  useEffect(() => {
-    onSelectionChange(selectedItems);
-  }, [selectedItems, onSelectionChange]);
-
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredItems, setFilteredItems] = useState<SearchItem[]>([]);
-  
   const [isResultsOpen, setIsResultsOpen] = useState(false);
   const [isSelectedMenuOpen, setIsSelectedMenuOpen] = useState(false);
-
   const searchBarRef = useRef<HTMLDivElement>(null);
 
+  //useEffect para notificar o componente pai quando occorer o gatilho
+  useEffect(() => {onSelectionChange(selectedItems)}, [selectedItems, onSelectionChange]);
+  
   // Filtra os itens com base no termo de pesquisa
   useEffect(() => {
+    setIsSelectedMenuOpen(false);
     if (searchTerm) {
       const lowercasedTerm = searchTerm.toLowerCase();
       const results = items.filter(item => 
-        item.name.toLowerCase().includes(lowercasedTerm) &&
-        !selectedItems.find(selected => selected.id === item.id)
+        item.name.toLowerCase().includes(lowercasedTerm) && !selectedItems.find(selected => selected.id === item.id)
       );
       setFilteredItems(results);
       setIsResultsOpen(true);
     } else {
       setIsResultsOpen(false);
     }
-  }, [searchTerm, items, selectedItems]);
+  }, [searchTerm, items]); //selecteItens removido do useEffect
 
   // Efeito para fechar os menus ao clicar fora do componente
   useEffect(() => {
@@ -90,6 +84,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ items, placeholder = "Pesquisar..
     setSelectedItems(prev => [...prev, item]);
     setSearchTerm('');
     setIsResultsOpen(false);
+    setFilteredItems([]);
   };
 
   const handleRemoveItem = (itemToRemove: SearchItem) => {
@@ -113,7 +108,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ items, placeholder = "Pesquisar..
           placeholder={placeholder}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={() => setIsResultsOpen(true)}
+          onFocus={() => (setIsResultsOpen(true))}
         />
         <button type="button" className="arrow-button" onClick={toggleSelectedMenu}>
           <ArrowIcon isOpen={isSelectedMenuOpen} />
