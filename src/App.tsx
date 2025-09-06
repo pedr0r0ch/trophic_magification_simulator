@@ -51,7 +51,7 @@ function App() {
   const [plotData, setPlotData] = useState<PlotData>([]); 
   const [exampleText, setExampleText] = useState<string>("");
 
-  // Este é o useEffect completo e corrigido
+  //useEffect das mensagens
   useEffect(() => {
     const messageForDioxina: string = "(Texto-exemplo gerado por IA) - As maiores preocupações com os impactos da dioxina na vida marinha centram-se em sua alta toxicidade e sua capacidade de funcionar como um potente desregulador endócrino. Essa substância, parte do grupo dos Poluentes Orgânicos Persistentes (POPs), interfere diretamente nos sistemas hormonais ao se ligar a receptores celulares, desregulando processos vitais como a reprodução, o desenvolvimento embrionário e a função imunológica. Em diversas espécies marinhas, desde peixes a mamíferos como focas e golfinhos, a exposição à dioxina está comprovadamente ligada a falhas reprodutivas, deformidades em filhotes, supressão do sistema imunológico e um aumento no risco de desenvolvimento de tumores.";
     const messageForOctocrileno: string = "(Texto-exemplo gerado por IA) - As principais preocupações em relação aos efeitos do octocrileno em animais marinhos derivam de seu potencial para atuar como um desregulador endócrino. Produtos químicos desreguladores endócrinos podem interferir nos sistemas hormonais dos animais, que regulam uma ampla gama de funções corporais, incluindo reprodução, desenvolvimento e metabolismo. Em várias espécies marinhas, o octocrileno tem sido associado à toxicidade reprodutiva e a anormalidades no desenvolvimento.";
@@ -72,7 +72,7 @@ function App() {
     if (messagesToShow.length > 0) {
       setExampleText(messagesToShow.join('\n\n'));
     } else {
-      setExampleText("A título de exemplo, esta mensagem mudará quando as concentrações de dioxina e octocrileno atingirem o limiar superior de 65 µm.");
+      setExampleText("A título de exemplo, esta mensagem mudará quando as concentrações de dioxina e/ou octocrileno atingirem o limiar superior de 65 µm.");
     }
     
   }, [selectedPollutants, selectedOrganisms, sliderValues]);
@@ -165,11 +165,28 @@ function App() {
       gap: '20px', // Espaçamento entre o container de gráficos e de texto
     },
     // Container dos Gráficos (Dentro da Coluna 2)
-    plotsContainer: {
-      flex: 1, // Faz este container crescer para ocupar o espaço disponível
-      overflowY: 'auto', // Adiciona sua própria barra de rolagem
-      minHeight: 0, // Truque de CSS para o flexbox calcular a altura corretamente
-      paddingRight: '10px', // Espaço para a barra de rolagem
+    plotsWrapper: { 
+      flex: 1,
+      minHeight: 0, 
+      position: 'relative'
+    },
+    scrollingPlotsArea: { 
+      position: 'absolute', 
+      top: 0, 
+      left: 0, 
+      right: 0, 
+      bottom: 0, 
+      overflowY: 'auto', 
+      padding: '0 1rem 1rem 1rem' 
+    },
+    gradientOverlay: { 
+      position: 'absolute', 
+      bottom: 0, 
+      left: 0, 
+      right: 0, 
+      height: '40px', 
+      background: `linear-gradient(to top, #f0f2f5, transparent)`, 
+      pointerEvents: 'none' 
     },
     // Container do Texto (Dentro da Coluna 2)
     textContainer: {
@@ -237,15 +254,17 @@ function App() {
       {/* --- COLUNA 2: CONTEÚDO --- */}
       <div style={styles.contentColumn}>
         {/* Container Superior: Gráficos */}
-        <main style={styles.plotsContainer}>
-          <Plot plotData={plotData}
-        />
-        </main>
+        <div style={styles.plotsWrapper}>
+          <div style={styles.scrollingPlotsArea}>
+            <Plot plotData={plotData} />
+          </div>
+          <div style={styles.gradientOverlay} />
+        </div>
 
         {/* Container Inferior: Texto Explicativo */}
         <aside style={styles.textContainer}>
 
-          <h3>Informações Adicionais (texto-exemplo) - (poderá ser oculto)</h3>
+          <h3>Informações Adicionais (Textos-exemplos) - (Ainda em Idealização)</h3>
            <p style={{ whiteSpace: 'pre-line' }}>
               {exampleText}
           </p>
