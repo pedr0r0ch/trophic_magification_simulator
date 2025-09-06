@@ -21,7 +21,7 @@ const poluentes: SearchItem[] = [
 
 const organismos: SearchItem[] = [
   { id: 'golfinho', name: 'Golfinho' },
-  { id: 'plancton', name: 'Plncton' },
+  { id: 'plancton', name: 'Plancton' },
   { id: 'tubarão', name: 'Tubarão' },
   { id: 'baleia', name: 'Baleia' },
   { id: 'tartaruga', name: 'Tartaruga' },
@@ -49,7 +49,35 @@ function App() {
   const [sliderValues, setSliderValues] = useState<SliderValuesState>({});
   const [selectedOrganisms, setSelectedOrganisms] = useState<SearchItem[]>([]);
   const [plotData, setPlotData] = useState<PlotData>([]); 
+  const [exampleText, setExampleText] = useState<string>("");
 
+  // Este é o useEffect completo e corrigido
+  useEffect(() => {
+    const messageForDioxina: string = "(Texto-exemplo gerado por IA) - As maiores preocupações com os impactos da dioxina na vida marinha centram-se em sua alta toxicidade e sua capacidade de funcionar como um potente desregulador endócrino. Essa substância, parte do grupo dos Poluentes Orgânicos Persistentes (POPs), interfere diretamente nos sistemas hormonais ao se ligar a receptores celulares, desregulando processos vitais como a reprodução, o desenvolvimento embrionário e a função imunológica. Em diversas espécies marinhas, desde peixes a mamíferos como focas e golfinhos, a exposição à dioxina está comprovadamente ligada a falhas reprodutivas, deformidades em filhotes, supressão do sistema imunológico e um aumento no risco de desenvolvimento de tumores.";
+    const messageForOctocrileno: string = "(Texto-exemplo gerado por IA) - As principais preocupações em relação aos efeitos do octocrileno em animais marinhos derivam de seu potencial para atuar como um desregulador endócrino. Produtos químicos desreguladores endócrinos podem interferir nos sistemas hormonais dos animais, que regulam uma ampla gama de funções corporais, incluindo reprodução, desenvolvimento e metabolismo. Em várias espécies marinhas, o octocrileno tem sido associado à toxicidade reprodutiva e a anormalidades no desenvolvimento.";
+    const messagesToShow: string[] = [];  
+    
+    const octocrilenoValue = sliderValues['octocrileno'];
+    const dioxinaValue = sliderValues['dioxina'];
+    
+    if (dioxinaValue > 65) {
+      messagesToShow.push(messageForDioxina);
+    }
+    
+    if (octocrilenoValue > 65) {
+      messagesToShow.push(messageForOctocrileno);
+    }
+
+    //mensagem final
+    if (messagesToShow.length > 0) {
+      setExampleText(messagesToShow.join('\n\n'));
+    } else {
+      setExampleText("A título de exemplo, esta mensagem mudará quando as concentrações de dioxina e octocrileno atingirem o limiar superior de 65 µm.");
+    }
+    
+  }, [selectedPollutants, selectedOrganisms, sliderValues]);
+
+  //UseEffect para gerar dados para o app plot
   useEffect(() => {
     const newPlotData = selectedPollutants.map((pollutant, pollutantIndex) => {
     const sliderValue = sliderValues[pollutant.id] || 100;
@@ -218,17 +246,8 @@ function App() {
         <aside style={styles.textContainer}>
 
           <h3>Informações Adicionais (texto-exemplo) - (poderá ser oculto)</h3>
-          <p>
-            A magnificação trófica da dioxina é o aumento progressivo da sua concentração ao longo da cadeia alimentar, devido à sua bioacumulação nos organismos. Sendo uma substância lipossolúvel (solúvel em gordura), as dioxinas acumulam-se no tecido adiposo dos animais e, como a sua eliminação do corpo é lenta, passam de um nível trófico para outro, concentrando-se cada vez mais em predadores no topo da cadeia, incluindo os humanos através da ingestão de alimentos contaminados, principalmente carne e laticínios. 
-Como a magnificação trófica da dioxina ocorre:
-1. Dispersão ambiental: As dioxinas são libertadas no ambiente através de processos industriais e queimadas, e espalham-se pela atmosfera e solo. 
-2. Contaminação de organismos: Organismos aquáticos e terrestres, como plantas e animais, absorvem as dioxinas presentes no meio ambiente. 
-3. Bioacumulação: Devido à sua natureza lipofílica (afinidade por gorduras), as dioxinas não são facilmente excretadas e acumulam-se nos tecidos gordos dos animais. 
-4. Transferência na cadeia alimentar: Quando um organismo é consumido por outro, as dioxinas presentes nos seus tecidos são transferidas e acumulam-se ainda mais. 
-5. Concentração no topo da cadeia: Ao longo da cadeia alimentar, a concentração de dioxinas aumenta a cada nível trófico, atingindo os níveis mais elevados em predadores de topo, como os humanos, que consomem alimentos de origem animal contaminados. 
-Impacto na saúde humana:
-A exposição humana às dioxinas ocorre maioritariamente através da ingestão de alimentos contaminados, sendo que mais de 90% da exposição se dá por esta via. 
-As dioxinas são substâncias químicas persistentes e bioacumulativas, que podem causar graves problemas de saúde, incluindo perturbações nos sistemas nervoso, imunológico, reprodutivo e endócrino, e são classificadas como carcinógenos humanos. 
+           <p style={{ whiteSpace: 'pre-line' }}>
+              {exampleText}
           </p>
         </aside>
       </div>
