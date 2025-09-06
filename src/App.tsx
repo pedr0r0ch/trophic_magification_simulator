@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import type { SearchItem } from './components/SearchBar';
 import SearchBar from './components/SearchBar';
 import ItemListWithSliders from './components/ItemListWithSliders';
@@ -33,18 +33,51 @@ type SliderValuesState = {
   [key: string | number]: number;
 }
 
+interface OrganismData {
+  organismName: string;
+  concentrations: number[];
+}
+interface PollutantData {
+  pollutantName: string;
+  organisms: OrganismData[];
+}
+type PlotData = PollutantData[];
+
 function App() {
   // --- ESTADO PARA POLUENTES ---
-  // Renomeado para maior clareza
   const [selectedPollutants, setSelectedPollutants] = useState<SearchItem[]>([]);
   const [sliderValues, setSliderValues] = useState<SliderValuesState>({});
-
-  // --- NOVO: ESTADO APENAS PARA ORGANISMOS ---
   const [selectedOrganisms, setSelectedOrganisms] = useState<SearchItem[]>([]);
+  const [plotData, setPlotData] = useState<PlotData>([]); 
 
-  // --- HANDLERS PARA POLUENTES ---
+  useEffect(() => {
+    const newPlotData = selectedPollutants.map((pollutant, pollutantIndex) => {
+    const sliderValue = sliderValues[pollutant.id] || 100;
+    const organismDataForPlot: OrganismData[] = selectedOrganisms.map((organism, organismIndex) => {
+        
+        const timePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+        const baseConcentrations = timePoints.map(t => 
+          Math.log(t + 1) * (organismIndex + 1) * (pollutantIndex + 1) * 5
+        );
 
-  // Handler que será chamado APENAS pelo SearchBar de Poluentes
+        const finalConcentrations = baseConcentrations.map(c => c * (sliderValue / 100));
+        return {
+          organismName: organism.name as string,
+          concentrations: finalConcentrations,
+        };
+      });
+
+      return {
+        pollutantName: pollutant.name as string,
+        organisms: organismDataForPlot,
+      };
+    });
+    setPlotData(newPlotData);
+    
+  }, [selectedPollutants, selectedOrganisms, sliderValues]); // Gatilhos do efeito
+
+
+  // Handler que será chamado pelo SearchBar de Poluentes
   const handlePollutantSelectionChange = (newSelectedItems: SearchItem[]) => {
     setSelectedPollutants(newSelectedItems);
 
@@ -63,8 +96,7 @@ function App() {
     }));
   };
 
-  // --- NOVO: HANDLER APENAS PARA ORGANISMOS ---
-  // Uma versão mais simples que só atualiza a lista de organismos selecionados.
+  // ---HANDLER PARA ORGANISMOS ---
   const handleOrganismSelectionChange = (newSelectedItems: SearchItem[]) => {
     setSelectedOrganisms(newSelectedItems);
   };
@@ -178,9 +210,7 @@ function App() {
       <div style={styles.contentColumn}>
         {/* Container Superior: Gráficos */}
         <main style={styles.plotsContainer}>
-          <Plot 
-          selectedPollutants={selectedPollutants}
-          sliderValues={sliderValues}
+          <Plot plotData={plotData}
         />
         </main>
 
