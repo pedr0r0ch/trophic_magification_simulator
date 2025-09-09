@@ -20,12 +20,12 @@ const poluentes: SearchItem[] = [
 ];
 
 const organismos: SearchItem[] = [
-  { id: 'golfinho', name: 'Golfinho' },
-  { id: 'plancton', name: 'Plancton' },
-  { id: 'tubarão', name: 'Tubarão' },
-  { id: 'baleia', name: 'Baleia' },
-  { id: 'tartaruga', name: 'Tartaruga' },
-  { id: 'peixes', name: 'Peixes de pequeno porte' },
+  { id: 'golfinho', name: 'Golfinho', chainLevel:3 },
+  { id: 'plancton', name: 'Plancton', chainLevel:1 },
+  { id: 'tubarão', name: 'Tubarão': chainLevel:0 },
+  { id: 'baleia', name: 'Baleia', chainLevel:0 },
+  { id: 'tartaruga', name: 'Tartaruga', chainLevel:0 },
+  { id: 'peixes', name: 'Peixes de pequeno porte':chainLevel:2 },
 
 ];
 
@@ -85,7 +85,7 @@ function App() {
         
         const timePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         const baseConcentrations = timePoints.map(t => 
-          Math.log(t + 1) * (organismIndex + 1) * (pollutantIndex + 1) * 5
+          Math.log(t + 1) * organism.chainLevel*organism.chainLevel * (pollutantIndex + 1) * 5
         );
 
         const finalConcentrations = baseConcentrations.map(c => c * (sliderValue / 100));
