@@ -22,10 +22,10 @@ const poluentes: SearchItem[] = [
 const organismos: SearchItem[] = [
   { id: 'golfinho', name: 'Golfinho', chainLevel:3 },
   { id: 'plancton', name: 'Plancton', chainLevel:1 },
-  { id: 'tubarão', name: 'Tubarão': chainLevel:0 },
+  { id: 'tubarão', name: 'Tubarão', chainLevel:0 },
   { id: 'baleia', name: 'Baleia', chainLevel:0 },
   { id: 'tartaruga', name: 'Tartaruga', chainLevel:0 },
-  { id: 'peixes', name: 'Peixes de pequeno porte':chainLevel:2 },
+  { id: 'peixes', name: 'Peixes de pequeno porte', chainLevel:2 },
 
 ];
 
