@@ -30,6 +30,7 @@ const ArrowIcon = ({ isOpen }: { isOpen: boolean }) => (
 export interface SearchItem {
   id: string | number;
   name: string;
+  class: number;
 }
 
 interface SearchBarProps {

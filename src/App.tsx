@@ -9,23 +9,23 @@ import ufrjLogo from './ufrj-vertical-cor-rgb-completa-telas.svg'
 
 // Dados de exemplo (sem alterações)
 const poluentes: SearchItem[] = [
-  { id: 'dioxina', name: 'Dioxina' },
-  { id: 'octocrileno', name: 'Octocrileno' },
-  { id: 'benzofenonas', name: 'Benzofenonas' },
-  { id: 'metilparabeno', name: 'Metilparabeno' },
-  { id: 'propilparabeno', name: 'Propilparabeno' },
-  { id: 'mercurio', name: 'Mercurio' },
-  { id: 'chumbo', name: 'Chumbo' },
-  { id: 'polifluoroalquil', name: 'Polifluoroalquil' },
+  { id: 'dioxina', name: 'Dioxina', class:0 },
+  { id: 'octocrileno', name: 'Octocrileno', class:0 },
+  { id: 'benzofenonas', name: 'Benzofenonas', class:0 },
+  { id: 'metilparabeno', name: 'Metilparabeno', class:0 },
+  { id: 'propilparabeno', name: 'Propilparabeno', class:0 },
+  { id: 'mercurio', name: 'Mercurio', class: 0 },
+  { id: 'chumbo', name: 'Chumbo', class:0},
+  { id: 'polifluoroalquil', name: 'Polifluoroalquil', class:0 },
 ];
 
 const organismos: SearchItem[] = [
-  { id: 'golfinho', name: 'Golfinho', chainLevel:3 },
-  { id: 'plancton', name: 'Plancton', chainLevel:1 },
-  { id: 'tubarão', name: 'Tubarão', chainLevel:0 },
-  { id: 'baleia', name: 'Baleia', chainLevel:0 },
-  { id: 'tartaruga', name: 'Tartaruga', chainLevel:0 },
-  { id: 'peixes', name: 'Peixes de pequeno porte', chainLevel:2 },
+  { id: 'golfinho', name: 'Golfinho', class:3 },
+  { id: 'plancton', name: 'Plancton', class:1 },
+  { id: 'tubarão', name: 'Tubarão', class:0.01 },
+  { id: 'baleia', name: 'Baleia', class:0.01 },
+  { id: 'tartaruga', name: 'Tartaruga', class:0.01 },
+  { id: 'peixes', name: 'Peixes de pequeno porte', class:2 },
 
 ];
 
@@ -79,13 +79,13 @@ function App() {
 
   //UseEffect para gerar dados para o app plot
   useEffect(() => {
-    const newPlotData = selectedPollutants.map((pollutant, pollutantIndex) => {
+    const newPlotData = selectedPollutants.map((pollutant) => {
     const sliderValue = sliderValues[pollutant.id] || 100;
-    const organismDataForPlot: OrganismData[] = selectedOrganisms.map((organism, organismIndex) => {
+    const organismDataForPlot: OrganismData[] = selectedOrganisms.map((organism) => {
         
         const timePoints = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-        const baseConcentrations = timePoints.map(t => 
-          Math.log(t + 1) * organism.chainLevel*organism.chainLevel * (pollutantIndex + 1) * 5
+        const baseConcentrations = timePoints.map(t =>
+          Math.log(t + 1) * organism.class*organism.class * 10
         );
 
         const finalConcentrations = baseConcentrations.map(c => c * (sliderValue / 100));
